@@ -5,3 +5,11 @@ text-decoration: none;
 body{
     overflow-x:hidden;
 }
+.card{
+background:#fff;
+padding: 15px;
+}
+.underline{
+    text-decoration: underline;
+    /*padding-bottom: 5px;*/
+}
