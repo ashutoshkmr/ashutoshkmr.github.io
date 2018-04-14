@@ -5,6 +5,9 @@
 body{
     overflow-x:hidden;
 }
+.lowercase{
+    text-transform: lowercase !important;
+}
 .nomargin{
     margin:0 !important;
 }
@@ -31,7 +34,7 @@ body{
 .tag {
   background: #eee;
   border-radius: 3px 0 0 3px;
-  color: #999;
+  color: #000;
   display: inline-block;
   height: 26px;
   line-height: 26px;
