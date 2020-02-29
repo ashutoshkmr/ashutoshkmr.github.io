@@ -1,3 +1,4 @@
-node_modules
-./package.json
-webslides-latest
+/node_modules/
+/public/build/
+
+.DS_Store
