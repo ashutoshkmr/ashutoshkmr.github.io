@@ -1,28 +1,24 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Ashutosh Kumar | Portfolio",
-  description: "Portfolio website for @ashutoshkmr",
-  themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
-    ],
+    title: 'Ashutosh Kumar | Portfolio',
+    description: 'Portfolio website for @ashutoshkmr',
+    lastUpdated: true,
+    themeConfig: {
+        // https://vitepress.dev/reference/default-theme-config
+        nav: [
+            { text: 'Projects', link: '/projects' },
+            { text: 'Blogs', link: '/blogs' }
+        ],
 
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+        socialLinks: [
+            { icon: 'github', link: 'https://github.com/ashutoshkmr' },
+            {
+                icon: 'linkedin',
+                link: 'https://www.linkedin.com/in/ashutoshkmr40/'
+            }
         ]
-      }
-    ],
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
-  }
-})
+    },
+    cleanUrls: true
+});
