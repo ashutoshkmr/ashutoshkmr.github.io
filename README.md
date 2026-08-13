@@ -1,73 +1,73 @@
 # ashutoshkmr.github.io
 
-Personal site and portfolio, built with [Astro](https://astro.build) and deployed
-to GitHub Pages.
+Personal site and résumé for [Ashutosh Kumar](https://ashutoshkmr.github.io) —
+an Astro static site deployed to GitHub Pages.
 
----
-
-## ⚠️ One-time setup required before this goes live
-
-The old site was plain HTML served straight from the repository root. This one is
-built by GitHub Actions, so the Pages source has to change or **the site will 404
-after merging**:
-
-1. Go to **Settings → Pages** in this repository.
-2. Under **Build and deployment → Source**, select **GitHub Actions**
-   (it is currently set to *Deploy from a branch*).
-
-That's it — every push to `master` then builds and deploys automatically via
-`.github/workflows/deploy.yml`.
-
----
+Every push to `master` builds and deploys automatically via
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Pages is set to
+**GitHub Actions** as its source; there is nothing to click after a push.
 
 ## Editing the content
 
 **All content lives in [`src/data/profile.ts`](src/data/profile.ts).** Nothing
 else needs touching to change what the site says — name, role, about, work
-history, projects, stack, education, and links all come from that one file.
+history, projects, stack, education and links all come from that one file, and
+the résumé is built from it too.
 
-Any field still containing `TODO` is a placeholder. The build prints a warning
-listing every one of them, so they can't ship unnoticed:
+A few conventions worth knowing:
 
-```
-⚠  23 placeholders still in src/data/profile.ts:
-   · role
-   · tagline
-   · work[0].company
-   ...
-```
+| Field | Notes |
+| --- | --- |
+| `tagline` | The hero line. A fragment, not a sentence. |
+| `seoDescription` | Separate from `tagline` because a fragment makes a poor search snippet. Aim for 120–155 characters. |
+| `summary` | Résumé only. Kept deliberately distinct from `about` so reading both never shows the same sentence twice. |
+| `phone` | Résumé only, never on the site. `/resume` and `/resume.pdf` are both public, so set it to `null` if you would rather it not be. |
+| `availability` | A string shows the pill in the hero; `null` hides it. |
+| `highlights` | Three to five bullets per role, strongest first. Renders on both the site and the résumé. |
 
-Placeholder text is also kept out of the `<title>` and meta description, so an
-early deploy won't put "TODO" into search results or link previews.
+Anything containing `TODO` is a placeholder. The build prints a warning listing
+every one, and placeholder text is kept out of the `<title>` and meta
+description so an early deploy cannot leak it into search results.
+
+### A note on what goes in
+
+Client work is described by outcome and general technique, not by product
+internals. Client and partner names, product constraints, internal feature
+names and specific algorithm choices are deliberately absent. Keep it that way
+when editing — a portfolio is a public document.
 
 ## The résumé
 
 The résumé is **generated from the same `profile.ts`**, so it cannot drift from
-the site. `src/pages/resume.astro` renders it as a print-optimised A4 page at
-`/resume`, and `public/resume.pdf` is that page printed to PDF.
+the site. [`src/pages/resume.astro`](src/pages/resume.astro) renders it as a
+print-optimised A4 page at `/resume`, and `public/resume.pdf` is that page
+printed to PDF.
 
-After changing content, regenerate the PDF:
+Easiest way to regenerate: run `npm run dev`, open
+<http://localhost:4321/resume>, hit **Print / Save as PDF**, save over
+`public/resume.pdf`.
+
+Scripted, on Windows:
 
 ```bash
 npm run build
-npx astro preview --port 4321   # in another terminal
+npx astro preview --port 4321          # leave running in another terminal
 
 "C:\Program Files\Google\Chrome\Application\chrome.exe" \
   --headless --disable-gpu --no-pdf-header-footer \
   --print-to-pdf="public/resume.pdf" http://localhost:4321/resume
 
-npm run build                   # copy the new PDF into dist/
+npm run build                          # copies the new PDF into dist/
 ```
 
-Or just open <http://localhost:4321/resume> and hit **Print / Save as PDF**.
-
 The output is real selectable text in a single column, so applicant tracking
-systems parse it in the right order.
+systems parse it in reading order.
 
-Two résumé-only fields live in `profile.ts`: `phone` and `summary`. The phone
-number is printed on the résumé but never on the site — though both `/resume`
-and `/resume.pdf` are publicly reachable, so set it to `null` if you would
-rather it not be.
+**Type size** is a set of custom properties (`--pt-body`, `--pt-meta`, …) at the
+top of the stylesheet in `resume.astro`. Change those to rescale the whole
+document in proportion rather than editing sizes individually. If a change
+pushes it to three pages, tighten the spacing values below them before reaching
+for smaller type.
 
 ## Local development
 
@@ -76,44 +76,55 @@ npm install
 npm run dev      # http://localhost:4321
 ```
 
-| Command           | Does                                        |
-| ----------------- | ------------------------------------------- |
-| `npm run dev`     | Dev server with hot reload                  |
-| `npm run build`   | Production build to `dist/`                 |
-| `npm run preview` | Serve the built site locally                |
-| `npm run check`   | Type-check `.astro` and `.ts` files         |
+| Command | Does |
+| --- | --- |
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Serve the built site locally |
+| `npm run check` | Type-check `.astro` and `.ts` files |
 
 ## Structure
 
 ```
 src/
-├── data/profile.ts       ← all site content
+├── data/profile.ts       ← all content, for both the site and the résumé
 ├── layouts/Base.astro    ← <head>, SEO, theme script, scroll behaviour
 ├── components/           ← Hero, Work, Projects, Stack, Contact, …
 ├── styles/global.css     ← design tokens, typography, layout primitives
 └── pages/
-    ├── index.astro       ← the single page
+    ├── index.astro       ← the site
+    ├── resume.astro      ← the résumé, print-optimised
     └── 404.astro
-public/                   ← favicon, OG image, résumé, robots.txt
+public/                   ← favicon, OG image, résumé PDF, robots.txt
 ```
 
 ## Design notes
 
 - **Typography-led, single column.** Section labels sit in a sticky left rail;
   content sits in a reading column capped at `68ch`.
-- **Three-state theming.** Light and dark palettes follow the OS by default, and
-  an explicit toggle overrides it (stored in `localStorage`). The theme is applied
-  by an inline script before first paint, so there's no flash of the wrong theme.
+- **Three-state theming.** Light and dark follow the OS by default, and an
+  explicit toggle overrides it in both directions (stored in `localStorage`).
+  Applied by an inline script before first paint, so there is no flash of the
+  wrong theme.
 - **Fonts are self-hosted** (Inter and JetBrains Mono, variable) — no external
   requests, so the site keeps working regardless of third-party availability.
-- **Motion is optional.** Scroll reveals and the availability pulse are wrapped in
-  `prefers-reduced-motion: no-preference`, and anything at or above the fold is
-  revealed synchronously so a deep link never lands on a blank screen.
-- **No client framework.** The only JavaScript shipped is the theme toggle and two
-  IntersectionObservers.
+- **Motion is optional.** Everything is wrapped in
+  `prefers-reduced-motion: no-preference`, and content at or above the fold is
+  revealed synchronously so a deep link like `/#contact` never lands on a blank
+  screen.
+- **No client framework.** The only JavaScript shipped is the theme toggle and
+  two IntersectionObservers, both inlined.
+
+### Why the data file uses explicit type annotations
+
+`work`, `projects`, `stack` and `education` are annotated (`const work: Job[]`)
+rather than checked with `satisfies`. `satisfies` narrows to the literal shape,
+so the moment no entry happens to use an optional field — `highlights`, say —
+that field disappears from the inferred type and every component reading it
+stops compiling. Keep the annotations.
 
 ## Regenerating the social image
 
-`public/og.png` and `public/apple-touch-icon.png` are static images rendered from
-the site's own fonts. They only need regenerating if the name or domain changes —
-edit the images directly, or re-render them from an HTML template at 1200×630.
+`public/og.png` and `public/apple-touch-icon.png` are static images rendered
+from the site's own fonts at 1200×630 and 180×180. They only need regenerating
+if the name or domain changes.
