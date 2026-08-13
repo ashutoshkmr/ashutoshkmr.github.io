@@ -4,8 +4,8 @@
  *  Every word on the site comes from here. Nothing else needs touching to
  *  change content — layout and styling live in src/components and src/styles.
  *
- *  Anything still reading "TODO" is a placeholder that needs your real details.
- *  The build prints a warning listing them, so you cannot ship them by accident.
+ *  Anything reading "TODO" is a placeholder. The build prints a warning
+ *  listing them, so you cannot ship them by accident.
  * ──────────────────────────────────────────────────────────────────────────── */
 
 export type Link = { label: string; href: string };
@@ -37,131 +37,211 @@ export type Project = {
   archived?: boolean;
 };
 
-export type Profile = typeof profile;
+export type StackGroup = { title: string; items: string[] };
+
+export type School = {
+  school: string;
+  degree: string;
+  start: string;
+  end: string;
+};
+
+/*
+ * The collections below are annotated (`: Job[]`) rather than `satisfies`-checked.
+ * `satisfies` narrows to the literal shape, so the moment no entry happens to use
+ * an optional field — `highlights`, say — that field disappears from the inferred
+ * type and any component reading it stops compiling.
+ */
+
+/** Most recent first. */
+const work: Job[] = [
+  {
+    company: 'Taazaa Inc',
+    role: 'Lead Engineer',
+    start: 'Nov 2025',
+    end: 'Present',
+    location: 'Noida, India',
+    summary:
+      'Leading engineering on end-to-end, fault-tolerant real-time cloud-native ' +
+      'applications — architecture, technical direction, and the people doing ' +
+      'the building.',
+    tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'Microservices'],
+    url: 'https://www.taazaa.com',
+  },
+  {
+    company: 'Taazaa Inc',
+    role: 'Senior Software Engineer',
+    start: 'May 2021',
+    end: 'Nov 2025',
+    location: 'Noida, India',
+    summary:
+      'Designed and shipped serverless backends and microservices for client ' +
+      'product teams, working across the stack from the AWS infrastructure up ' +
+      'to the Vue front ends consuming it.',
+    tech: [
+      'Node.js',
+      'TypeScript',
+      'Rust',
+      'AWS Lambda',
+      'Serverless',
+      'Vue.js',
+      'SQL',
+      'NoSQL',
+    ],
+  },
+  {
+    company: 'Taazaa Inc',
+    role: 'Software Engineer',
+    start: 'Jun 2020',
+    end: 'May 2021',
+    location: 'Noida, India',
+    summary:
+      'Built product features end to end at a product engineering consultancy, ' +
+      'moving between client codebases and stacks.',
+    tech: ['Vue.js', 'AWS Lambda', 'Node.js', 'TypeScript'],
+  },
+  {
+    company: 'Buildsys',
+    role: 'Software Engineer',
+    start: 'Jun 2018',
+    end: 'Jun 2020',
+    location: 'New Delhi, India',
+    summary:
+      'Multi-platform, cloud-based software for managing construction projects ' +
+      'end to end. Worked across the .NET backend, the Angular web client and ' +
+      'the Flutter mobile app.',
+    tech: ['C#/.NET', 'ASP.NET Boilerplate', 'Angular', 'TypeScript', 'Flutter'],
+  },
+  {
+    company: 'EventsMosaic',
+    role: 'Web Developer',
+    start: 'Feb 2016',
+    end: 'Jan 2018',
+    location: 'New Delhi, India',
+    summary:
+      'A one-stop platform for organising events, bridging users, organisers ' +
+      'and vendors. First professional engineering work, alongside my degree.',
+    tech: ['MongoDB', 'Express', 'Angular', 'Node.js'],
+  },
+];
+
+const projects: Project[] = [
+  {
+    name: 'Open-source contributions',
+    blurb:
+      'Upstream fixes and improvements to tools I build on — serverless-bundle, ' +
+      'Flutter, and FirebaseExtended/flutterfire.',
+    year: 'Ongoing',
+    tech: ['Rust', 'Dart', 'Node.js'],
+    links: [{ label: 'GitHub', href: 'https://github.com/ashutoshkmr' }],
+    featured: true,
+  },
+  {
+    name: 'Medicus',
+    blurb:
+      'Appointment management and scheduling for hospitals, built in 36 hours ' +
+      'at Smart India Hackathon 2018 for the Ministry of Health and Family ' +
+      'Welfare. Aimed at people in remote areas — surfacing available treatment ' +
+      'resources and thinning the crowds at AIIMS and other government hospitals.',
+    year: '2018',
+    tech: ['MongoDB', 'Express', 'Angular', 'Node.js'],
+  },
+  {
+    name: 'TRAAM',
+    blurb:
+      'Asset tracking and management system built in 36 hours at Smart India ' +
+      'Hackathon 2017 for the Ministry of Defence.',
+    year: '2017',
+    tech: ['MongoDB', 'Express', 'Angular', 'Node.js', 'Ionic/Cordova'],
+  },
+  {
+    name: 'CrypTrace',
+    blurb:
+      'Cryptocurrency tracker following prices across 50+ markets in real time. ' +
+      'Shipped as a hybrid Android app, then rebuilt as an installable PWA.',
+    year: '2018',
+    tech: ['React', 'Ionic', 'TypeScript', 'Socket.io', 'Chart.js'],
+    links: [
+      { label: 'Source', href: 'https://github.com/ashutoshkmr/cryptrace' },
+      { label: 'PWA', href: 'https://github.com/ashutoshkmr/cryptrace-PWA' },
+    ],
+    archived: true,
+  },
+];
+
+/** Keep this honest — list what you would be comfortable being interviewed on. */
+const stack: StackGroup[] = [
+  {
+    title: 'Languages',
+    items: ['TypeScript', 'JavaScript', 'Rust', 'C#', 'Dart', 'SQL'],
+  },
+  {
+    title: 'Backend',
+    items: ['Node.js', 'Express', 'Microservices', 'ASP.NET Boilerplate'],
+  },
+  {
+    title: 'Cloud',
+    items: ['AWS Lambda', 'API Gateway', 'RDS', 'Serverless Framework', 'Azure'],
+  },
+  { title: 'Frontend', items: ['Vue.js', 'React', 'Angular', 'Flutter'] },
+  { title: 'Data', items: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL'] },
+];
+
+const education: School[] = [
+  {
+    school: 'NITRA Technical Campus, Ghaziabad',
+    degree: 'B.Tech, Computer Science & Engineering',
+    start: '2014',
+    end: '2018',
+  },
+];
 
 export const profile = {
   /* ── Identity ─────────────────────────────────────────────────────────── */
   name: 'Ashutosh Kumar',
-  /** Shown under your name. Keep it to a few words. */
-  role: 'TODO — your current title, e.g. Senior Software Engineer',
-  /** One or two sentences. This is the first thing a recruiter reads. */
+  role: 'Lead Engineer',
   tagline:
-    'TODO — one line on what you build and what you are good at. ' +
-    'Example: "I build backend systems that stay boring under load — ' +
-    'currently payments infrastructure at Acme."',
-  location: 'TODO — city, country',
+    'I build fault-tolerant, real-time cloud-native systems — currently leading ' +
+    'engineering at Taazaa, mostly in Rust, Node.js and AWS.',
+  location: 'Noida, Uttar Pradesh, India',
   email: 'ashutoshkmr40@gmail.com',
 
-  /** Set to null to hide the availability pill in the hero. */
-  availability: 'TODO — e.g. "Open to senior backend roles"' as string | null,
+  /**
+   * Shown as a pill at the top of the page. Set a string to show it, e.g.
+   * 'Open to staff and principal engineering roles'. null hides it.
+   */
+  availability: null as string | null,
 
   /* ── Links ────────────────────────────────────────────────────────────── */
   social: {
     github: 'https://github.com/ashutoshkmr',
     linkedin: 'https://www.linkedin.com/in/ashutoshkmr40/',
-    /** Optional — set to null to hide. */
     x: null as string | null,
-    /** Path is relative to /public. Replace the PDF with a current one. */
+    /** Path is relative to /public. */
     resume: '/resume.pdf',
   },
 
   /* ── About ────────────────────────────────────────────────────────────── */
-  /** Each string is its own paragraph. Two or three is plenty. */
+  /** Each string is its own paragraph. */
   about: [
-    'TODO — who you are professionally. What kind of problems you take on, ' +
-      'what you have gotten good at over the years, and the kind of team you ' +
-      'do your best work on.',
-    'TODO — a second paragraph, optionally more personal: what you are ' +
-      'learning right now, what you do away from the keyboard.',
+    'Eight years building backend and cloud-native systems, the last six at ' +
+      'Taazaa, where I have moved from engineer to lead. Most of my work is ' +
+      'distributed systems that have to stay correct under load and under ' +
+      'failure — real-time services, event-driven pipelines, and the serverless ' +
+      'infrastructure underneath them.',
+    'These days that mostly means Rust, Node.js and TypeScript on AWS, though I ' +
+      'have shipped enough C#, Vue, Angular and Flutter over the years to be ' +
+      'useful most places in a stack. I contribute upstream when something I ' +
+      'depend on needs fixing.',
   ],
 
-  /* ── Work ─────────────────────────────────────────────────────────────── */
-  /** Most recent first. */
-  work: [
-    {
-      company: 'TODO — current company',
-      role: 'TODO — your title',
-      start: 'TODO',
-      end: 'Present',
-      location: 'TODO',
-      summary:
-        'TODO — one or two sentences on what the team owns and your part in it.',
-      highlights: [
-        'TODO — an outcome with a number attached, if you have one.',
-        'TODO — something you built or led that you would happily be asked about.',
-      ],
-      tech: ['TODO', 'TODO'],
-    },
-    {
-      company: 'Events Mosaic',
-      role: 'Software Engineering Intern',
-      start: 'Jun 2017',
-      end: 'Jan 2018',
-      location: 'Delhi, India',
-      summary:
-        'Early-stage startup digitising event vendors and their services. ' +
-        'Worked across the web app and the Android release.',
-      tech: ['Angular', 'Ionic', 'Node.js'],
-      url: 'https://play.google.com/store/apps/details?id=org.mosaic.first.app',
-    },
-  ] satisfies Job[],
-
-  /* ── Projects ─────────────────────────────────────────────────────────── */
-  projects: [
-    {
-      name: 'TODO — your best recent project',
-      blurb:
-        'TODO — what it does and why it was interesting to build. One or two ' +
-        'sentences. Lead with the problem, not the stack.',
-      year: '2025',
-      tech: ['TODO'],
-      links: [{ label: 'Source', href: 'https://github.com/ashutoshkmr' }],
-      featured: true,
-    },
-    {
-      name: 'CrypTrace',
-      blurb:
-        'Hybrid mobile app tracking live prices for major cryptocurrencies ' +
-        'across 50+ markets, with streaming updates and charting.',
-      year: '2018',
-      tech: ['Ionic', 'Angular', 'TypeScript', 'Socket.io', 'Chart.js'],
-      links: [{ label: 'Source', href: 'https://github.com/ashutoshkmr/cryptrace' }],
-      archived: true,
-    },
-    {
-      name: 'CrypTrace PWA',
-      blurb:
-        'Progressive web app rebuild of CrypTrace — installable, offline-aware, ' +
-        'and served without an app store.',
-      year: '2018',
-      tech: ['React', 'Service Workers', 'Firebase'],
-      links: [
-        { label: 'Source', href: 'https://github.com/ashutoshkmr/cryptrace-PWA' },
-      ],
-      archived: true,
-    },
-  ] satisfies Project[],
-
-  /* ── Stack ────────────────────────────────────────────────────────────── */
-  /** Keep this honest — list what you would be comfortable being interviewed on. */
-  stack: [
-    { title: 'Languages', items: ['TODO', 'TypeScript', 'JavaScript', 'Python'] },
-    { title: 'Backend', items: ['TODO', 'Node.js', 'Express'] },
-    { title: 'Frontend', items: ['TODO', 'React'] },
-    { title: 'Data', items: ['TODO', 'PostgreSQL', 'MongoDB'] },
-    { title: 'Infrastructure', items: ['TODO — e.g. Docker, AWS, CI/CD'] },
-  ],
-
-  /* ── Education ────────────────────────────────────────────────────────── */
-  education: [
-    {
-      school: 'NITRA Technical Campus',
-      degree: 'B.Tech, Computer Science & Engineering',
-      start: '2014',
-      end: '2018',
-    },
-  ],
+  work,
+  projects,
+  stack,
+  education,
 };
+
+export type Profile = typeof profile;
 
 /**
  * Walks the profile and collects the paths of any field still holding a
