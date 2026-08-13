@@ -62,9 +62,8 @@ const work: Job[] = [
     end: 'Present',
     location: 'Noida, India',
     summary:
-      'Leading engineering on end-to-end, fault-tolerant real-time cloud-native ' +
-      'applications — architecture, technical direction, and the people doing ' +
-      'the building.',
+      'Leading a small team of developers building end-to-end cloud-native ' +
+      'applications; responsible for architecture and technical direction.',
     tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'Microservices'],
     url: 'https://www.taazaa.com',
   },
@@ -96,7 +95,7 @@ const work: Job[] = [
     end: 'May 2021',
     location: 'Noida, India',
     summary:
-      'Built product features end to end at a product engineering consultancy, ' +
+      'Built product features end to end at a product engineering company, ' +
       'moving between client codebases and stacks.',
     tech: ['Vue.js', 'AWS Lambda', 'Node.js', 'TypeScript'],
   },
@@ -107,20 +106,20 @@ const work: Job[] = [
     end: 'Jun 2020',
     location: 'New Delhi, India',
     summary:
-      'Multi-platform, cloud-based software for managing construction projects ' +
-      'end to end. Worked across the .NET backend, the Angular web client and ' +
-      'the Flutter mobile app.',
+      'Built and maintained a multi-platform, cloud-based platform for managing ' +
+      'construction projects end to end — .NET backend, Angular web client and ' +
+      'Flutter mobile app.',
     tech: ['C#/.NET', 'ASP.NET Boilerplate', 'Angular', 'TypeScript', 'Flutter'],
   },
   {
     company: 'EventsMosaic',
-    role: 'Web Developer',
+    role: 'Web Development Intern',
     start: 'Feb 2016',
     end: 'Jan 2018',
     location: 'New Delhi, India',
     summary:
-      'A one-stop platform for organising events, bridging users, organisers ' +
-      'and vendors. First professional engineering work, alongside my degree.',
+      'Built the web platform for an events marketplace connecting users, ' +
+      'organisers and vendors. Part-time internship taken alongside the degree.',
     tech: ['MongoDB', 'Express', 'Angular', 'Node.js'],
   },
 ];
@@ -132,25 +131,25 @@ const projects: Project[] = [
       'Upstream fixes and improvements to tools I build on — serverless-bundle, ' +
       'Flutter, and FirebaseExtended/flutterfire.',
     year: 'Ongoing',
-    tech: ['Rust', 'Dart', 'Node.js'],
+    tech: ['Dart', 'Node.js'],
     links: [{ label: 'GitHub', href: 'https://github.com/ashutoshkmr' }],
     featured: true,
   },
   {
     name: 'Medicus',
     blurb:
-      'Appointment management and scheduling for hospitals, built in 36 hours ' +
-      'at Smart India Hackathon 2018 for the Ministry of Health and Family ' +
-      'Welfare. Aimed at people in remote areas — surfacing available treatment ' +
-      'resources and thinning the crowds at AIIMS and other government hospitals.',
+      'Appointment management and scheduling for hospitals, built for the ' +
+      'Ministry of Health and Family Welfare at Smart India Hackathon 2018. ' +
+      'Surfaces treatment resources for people in remote areas and thins the ' +
+      'queues at AIIMS and other government hospitals.',
     year: '2018',
     tech: ['MongoDB', 'Express', 'Angular', 'Node.js'],
   },
   {
     name: 'TRAAM',
     blurb:
-      'Asset tracking and management system built in 36 hours at Smart India ' +
-      'Hackathon 2017 for the Ministry of Defence.',
+      'Asset tracking and management for the Ministry of Defence — a 36-hour ' +
+      'build at Smart India Hackathon 2017.',
     year: '2017',
     tech: ['MongoDB', 'Express', 'Angular', 'Node.js', 'Ionic/Cordova'],
   },
@@ -173,7 +172,7 @@ const projects: Project[] = [
 const stack: StackGroup[] = [
   {
     title: 'Languages',
-    items: ['TypeScript', 'JavaScript', 'Rust', 'C#', 'Dart', 'SQL'],
+    items: ['TypeScript', 'JavaScript', 'Rust', 'C#', 'Dart'],
   },
   {
     title: 'Backend',
@@ -184,7 +183,7 @@ const stack: StackGroup[] = [
     items: ['AWS Lambda', 'API Gateway', 'RDS', 'Serverless Framework', 'Azure'],
   },
   { title: 'Frontend', items: ['Vue.js', 'React', 'Angular', 'Flutter'] },
-  { title: 'Data', items: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL'] },
+  { title: 'Data', items: ['SQL', 'NoSQL', 'MongoDB', 'RDS'] },
 ];
 
 const education: School[] = [
@@ -213,11 +212,14 @@ export const profile = {
    */
   phone: '+91 75319 44347' as string | null,
 
-  /** Two or three lines at the top of the résumé. */
+  /**
+   * Two or three lines at the top of the résumé. Kept deliberately distinct
+   * from `about` — anyone reading both should not see the same sentences twice.
+   */
   summary:
-    'Lead engineer with eight years building backend and cloud-native systems — ' +
-    'real-time services, event-driven pipelines and the serverless infrastructure ' +
-    'underneath them. Mostly Rust, Node.js and TypeScript on AWS.',
+    'Lead Engineer with eight years of full-time experience across backend, ' +
+    'cloud and mobile. Currently leading a small team building fault-tolerant ' +
+    'distributed systems on AWS, primarily in Rust and Node.js.',
 
   /**
    * Shown as a pill at the top of the page. Set a string to show it, e.g.
@@ -237,14 +239,14 @@ export const profile = {
   /* ── About ────────────────────────────────────────────────────────────── */
   /** Each string is its own paragraph. */
   about: [
-    'Eight years building backend and cloud-native systems, the last six at ' +
-      'Taazaa, where I have moved from engineer to lead. Most of my work is ' +
-      'distributed systems that have to stay correct under load and under ' +
-      'failure — real-time services, event-driven pipelines, and the serverless ' +
-      'infrastructure underneath them.',
-    'These days that mostly means Rust, Node.js and TypeScript on AWS, though I ' +
-      'have shipped enough C#, Vue, Angular and Flutter over the years to be ' +
-      'useful most places in a stack. I contribute upstream when something I ' +
+    'Eight years of full-time engineering, the last six at Taazaa, where I have ' +
+      'moved from engineer to lead. Most of my work is distributed systems that ' +
+      'have to stay correct under load and under failure — real-time services, ' +
+      'event-driven pipelines, and the serverless infrastructure underneath them.',
+    'Leading has mostly meant less time in the editor and more on design review, ' +
+      'mentoring, and making sure the people around me are unblocked. I have ' +
+      'shipped enough C#, Vue, Angular and Flutter over the years to be useful ' +
+      'in most parts of a stack, and I contribute upstream when something I ' +
       'depend on needs fixing.',
   ],
 
