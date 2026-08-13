@@ -120,6 +120,7 @@ const work: Job[] = [
       'construction projects end to end — .NET backend, Angular web client and ' +
       'Flutter mobile app.',
     tech: ['C#/.NET', 'ASP.NET Boilerplate', 'Angular', 'TypeScript', 'Flutter'],
+    url: 'https://www.linkedin.com/company/buildsysinc',
   },
   {
     company: 'EventsMosaic',
