@@ -64,6 +64,16 @@ const work: Job[] = [
     summary:
       'Leading a small team of developers building end-to-end cloud-native ' +
       'applications; responsible for architecture and technical direction.',
+    // Impact bullets go here, and render on both the site and the resume.
+    // Two or three, each an outcome rather than a duty. Rough honest numbers
+    // beat none — "roughly halved" is worth more than a sentence without a
+    // figure. Delete this comment once they are written.
+    //
+    // highlights: [
+    //   'Cut p99 latency on <service> from Xms to Yms by <the change you made>.',
+    //   'Took the AWS bill for <workload> down ~N% by <what you moved or removed>.',
+    //   'Grew the team from N to M and cut onboarding to first merged PR to X days.',
+    // ],
     tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'Microservices'],
     url: 'https://www.taazaa.com',
   },
