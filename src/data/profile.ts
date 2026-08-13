@@ -62,19 +62,21 @@ const work: Job[] = [
     end: 'Present',
     location: 'Noida, India',
     summary:
-      'Leading a small team of developers building end-to-end cloud-native ' +
-      'applications; responsible for architecture and technical direction.',
-    // Impact bullets go here, and render on both the site and the resume.
-    // Two or three, each an outcome rather than a duty. Rough honest numbers
-    // beat none — "roughly halved" is worth more than a sentence without a
-    // figure. Delete this comment once they are written.
-    //
-    // highlights: [
-    //   'Cut p99 latency on <service> from Xms to Yms by <the change you made>.',
-    //   'Took the AWS bill for <workload> down ~N% by <what you moved or removed>.',
-    //   'Grew the team from N to M and cut onboarding to first merged PR to X days.',
-    // ],
-    tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'Microservices'],
+      'Leading a small team of developers on a long-running education platform; ' +
+      'responsible for architecture, technical direction and the infrastructure ' +
+      'it runs on.',
+    highlights: [
+      'Sole owner of the AWS account behind the platform — infrastructure, ' +
+        'deployments and cost.',
+      'Cut the DynamoDB bill by 70% by ageing session data out of the hot table ' +
+        'on a TTL and moving it to object storage, keeping reads fast and ' +
+        'provisioned read capacity low.',
+      'Implemented LTI so partner institutions can launch the product from their ' +
+        'own learning platforms.',
+      'Interview engineering candidates, train new graduates, and run internal ' +
+        'sessions on getting useful work out of AI tools.',
+    ],
+    tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'DynamoDB', 'Microservices'],
     url: 'https://www.taazaa.com',
   },
   {
@@ -84,18 +86,27 @@ const work: Job[] = [
     end: 'Nov 2025',
     location: 'Noida, India',
     summary:
-      'Designed and shipped serverless backends and microservices for client ' +
-      'product teams, working across the stack from the AWS infrastructure up ' +
-      'to the Vue front ends consuming it.',
+      'Two long-running client engagements: serverless APIs for connected ' +
+      'medical devices, then the rendering and real-time layer of an education ' +
+      'platform.',
+    highlights: [
+      'Built the real-time collaboration layer, putting multiple users on the ' +
+        'same document simultaneously over WebSocket.',
+      'Rewrote hot paths in a graphics-heavy front end, replacing linear scans ' +
+        'with indexed lookups to keep interaction responsive under load.',
+      'Built serverless APIs for a mobile application that communicates with ' +
+        'connected medical devices over Bluetooth.',
+      'Restructured a large codebase into maintainable packages, migrated it to ' +
+        'TypeScript, and built the authentication and authorisation layer.',
+    ],
     tech: [
       'Node.js',
       'TypeScript',
-      'Rust',
       'AWS Lambda',
-      'Serverless',
+      'Serverless Framework',
+      'WebSockets',
+      'DynamoDB',
       'Vue.js',
-      'SQL',
-      'NoSQL',
     ],
   },
   {
@@ -191,10 +202,10 @@ const stack: StackGroup[] = [
   },
   {
     title: 'Cloud',
-    items: ['AWS Lambda', 'API Gateway', 'RDS', 'Serverless Framework', 'Azure'],
+    items: ['AWS Lambda', 'API Gateway', 'S3', 'Serverless Framework', 'Azure'],
   },
-  { title: 'Frontend', items: ['Vue.js', 'React', 'Angular', 'Flutter'] },
-  { title: 'Data', items: ['SQL', 'NoSQL', 'MongoDB', 'RDS'] },
+  { title: 'Frontend', items: ['Vue.js', 'React', 'Angular', 'Flutter', 'Canvas'] },
+  { title: 'Data', items: ['DynamoDB', 'RDS', 'MongoDB', 'SQL', 'NoSQL'] },
 ];
 
 const education: School[] = [
@@ -239,9 +250,10 @@ export const profile = {
    * from `about` — anyone reading both should not see the same sentences twice.
    */
   summary:
-    'Lead Engineer with eight years of full-time experience across backend, ' +
-    'cloud and mobile. Currently leading a small team building fault-tolerant ' +
-    'distributed systems on AWS, primarily in Rust and Node.js.',
+    'Lead Engineer, eight years across backend, cloud and mobile. Currently own ' +
+    'the architecture and AWS infrastructure behind an education platform — ' +
+    'real-time collaboration, standards-based integrations, and the serverless ' +
+    'services underneath.',
 
   /**
    * Shown as a pill at the top of the page. Set a string to show it, e.g.
