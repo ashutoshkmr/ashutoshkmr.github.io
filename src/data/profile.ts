@@ -19,7 +19,7 @@ export type Job = {
   end: string;
   location?: string;
   summary: string;
-  /** Two to four bullets. Lead with impact, not responsibilities. */
+  /** Three to five bullets, strongest first. Lead with impact, not duties. */
   highlights?: string[];
   tech?: string[];
   url?: string;
@@ -61,20 +61,16 @@ const work: Job[] = [
     start: 'Nov 2025',
     end: 'Present',
     location: 'Noida, India',
-    summary:
-      'Leading a small team of developers on a long-running education platform; ' +
-      'responsible for architecture, technical direction and the infrastructure ' +
-      'it runs on.',
+    summary: 'Leading a small team of developers on a long-running education platform.',
     highlights: [
-      'Sole owner of the AWS account behind the platform — infrastructure, ' +
-        'deployments and cost.',
-      'Cut the DynamoDB bill by 70% by ageing session data out of the hot table ' +
-        'on a TTL and moving it to object storage, keeping reads fast and ' +
-        'provisioned read capacity low.',
-      'Implemented LTI so partner institutions can launch the product from their ' +
-        'own learning platforms.',
       'Interview engineering candidates, train new graduates, and run internal ' +
         'sessions on getting useful work out of AI tools.',
+      'Own architecture, technical direction, and the AWS account behind the ' +
+        'platform — infrastructure, deployments and cost.',
+      'Cut the DynamoDB bill by 70% by ageing session data out of the hot table ' +
+        'into object storage.',
+      'Implemented LTI so partner institutions can launch the product from their ' +
+        'own learning platforms.',
     ],
     tech: ['Rust', 'Node.js', 'TypeScript', 'AWS', 'DynamoDB', 'Microservices'],
     url: 'https://www.taazaa.com',
@@ -86,18 +82,18 @@ const work: Job[] = [
     end: 'Nov 2025',
     location: 'Noida, India',
     summary:
-      'Two long-running client engagements: serverless APIs for connected ' +
-      'medical devices, then the rendering and real-time layer of an education ' +
-      'platform.',
+      'Two long-running client engagements: an education platform, and a ' +
+      'connected medical device product.',
     highlights: [
+      'Restructured a large codebase into maintainable packages and migrated it ' +
+        'to TypeScript.',
+      'Designed and built the authentication and authorisation layer.',
       'Built the real-time collaboration layer, putting multiple users on the ' +
         'same document simultaneously over WebSocket.',
       'Rewrote hot paths in a graphics-heavy front end, replacing linear scans ' +
         'with indexed lookups to keep interaction responsive under load.',
-      'Built serverless APIs for a mobile application that communicates with ' +
+      'Delivered serverless APIs for a mobile application communicating with ' +
         'connected medical devices over Bluetooth.',
-      'Restructured a large codebase into maintainable packages, migrated it to ' +
-        'TypeScript, and built the authentication and authorisation layer.',
     ],
     tech: [
       'Node.js',
@@ -115,9 +111,12 @@ const work: Job[] = [
     start: 'Jun 2020',
     end: 'May 2021',
     location: 'Noida, India',
-    summary:
-      'Built product features end to end at a product engineering company, ' +
-      'moving between client codebases and stacks.',
+    summary: 'First role at Taazaa, on client product teams.',
+    highlights: [
+      'Shipped product features end to end, moving between client codebases and ' +
+        'stacks.',
+      'Built serverless backends on AWS Lambda behind Vue front ends.',
+    ],
     tech: ['Vue.js', 'AWS Lambda', 'Node.js', 'TypeScript'],
   },
   {
@@ -126,10 +125,13 @@ const work: Job[] = [
     start: 'Jun 2018',
     end: 'Jun 2020',
     location: 'New Delhi, India',
-    summary:
-      'Built and maintained a multi-platform, cloud-based platform for managing ' +
-      'construction projects end to end — .NET backend, Angular web client and ' +
-      'Flutter mobile app.',
+    summary: 'Cloud-based software for the construction and real estate industries.',
+    highlights: [
+      'Built and maintained a multi-platform product for managing construction ' +
+        'projects end to end.',
+      'Worked across the whole surface — .NET backend, Angular web client, and ' +
+        'Flutter mobile app.',
+    ],
     tech: ['C#/.NET', 'ASP.NET Boilerplate', 'Angular', 'TypeScript', 'Flutter'],
     url: 'https://www.linkedin.com/company/buildsysinc',
   },
@@ -139,9 +141,11 @@ const work: Job[] = [
     start: 'Feb 2016',
     end: 'Jan 2017',
     location: 'New Delhi, India',
-    summary:
+    summary: 'Part-time internship taken alongside the degree.',
+    highlights: [
       'Built the web platform for an events marketplace connecting users, ' +
-      'organisers and vendors. Part-time internship taken alongside the degree.',
+        'organisers and vendors.',
+    ],
     tech: ['MongoDB', 'Express', 'Angular', 'Node.js'],
   },
 ];
