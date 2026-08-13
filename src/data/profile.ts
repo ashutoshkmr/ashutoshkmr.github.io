@@ -128,8 +128,8 @@ const projects: Project[] = [
   {
     name: 'Open-source contributions',
     blurb:
-      'Upstream fixes and improvements to tools I build on — serverless-bundle, ' +
-      'Flutter, and FirebaseExtended/flutterfire.',
+      'Fixes and improvements landed upstream in serverless-bundle, Flutter, ' +
+      'and FirebaseExtended/flutterfire.',
     year: 'Ongoing',
     tech: ['Dart', 'Node.js'],
     links: [{ label: 'GitHub', href: 'https://github.com/ashutoshkmr' }],
@@ -257,8 +257,8 @@ export const profile = {
     'Leading has mostly meant less time in the editor and more on design review, ' +
       'mentoring, and making sure the people around me are unblocked. I have ' +
       'shipped enough C#, Vue, Angular and Flutter over the years to be useful ' +
-      'in most parts of a stack, and I contribute upstream when something I ' +
-      'depend on needs fixing.',
+      'in most parts of a stack. Open source underpins nearly all of it, so I ' +
+      'contribute back where I can — and I am looking to do more of it.',
   ],
 
   work,
