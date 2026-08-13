@@ -40,7 +40,34 @@ listing every one of them, so they can't ship unnoticed:
 Placeholder text is also kept out of the `<title>` and meta description, so an
 early deploy won't put "TODO" into search results or link previews.
 
-To replace the résumé, drop a new PDF at `public/resume.pdf`.
+## The résumé
+
+The résumé is **generated from the same `profile.ts`**, so it cannot drift from
+the site. `src/pages/resume.astro` renders it as a print-optimised A4 page at
+`/resume`, and `public/resume.pdf` is that page printed to PDF.
+
+After changing content, regenerate the PDF:
+
+```bash
+npm run build
+npx astro preview --port 4321   # in another terminal
+
+"C:\Program Files\Google\Chrome\Application\chrome.exe" \
+  --headless --disable-gpu --no-pdf-header-footer \
+  --print-to-pdf="public/resume.pdf" http://localhost:4321/resume
+
+npm run build                   # copy the new PDF into dist/
+```
+
+Or just open <http://localhost:4321/resume> and hit **Print / Save as PDF**.
+
+The output is real selectable text in a single column, so applicant tracking
+systems parse it in the right order.
+
+Two résumé-only fields live in `profile.ts`: `phone` and `summary`. The phone
+number is printed on the résumé but never on the site — though both `/resume`
+and `/resume.pdf` are publicly reachable, so set it to `null` if you would
+rather it not be.
 
 ## Local development
 

@@ -207,6 +207,19 @@ export const profile = {
   email: 'ashutoshkmr40@gmail.com',
 
   /**
+   * Printed on the résumé only — never on the site itself. Both /resume and
+   * /resume.pdf are publicly reachable, so this number is public once set.
+   * null omits it.
+   */
+  phone: '+91 75319 44347' as string | null,
+
+  /** Two or three lines at the top of the résumé. */
+  summary:
+    'Lead engineer with eight years building backend and cloud-native systems — ' +
+    'real-time services, event-driven pipelines and the serverless infrastructure ' +
+    'underneath them. Mostly Rust, Node.js and TypeScript on AWS.',
+
+  /**
    * Shown as a pill at the top of the page. Set a string to show it, e.g.
    * 'Open to staff and principal engineering roles'. null hides it.
    */
