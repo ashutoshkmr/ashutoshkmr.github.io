@@ -199,9 +199,13 @@ export const profile = {
   /* ── Identity ─────────────────────────────────────────────────────────── */
   name: 'Ashutosh Kumar',
   role: 'Lead Engineer',
+  /**
+   * The hero line, and the meta description. Deliberately does not restate the
+   * job title rendered directly above it.
+   */
   tagline:
-    'I build fault-tolerant, real-time cloud-native systems — currently leading ' +
-    'engineering at Taazaa, mostly in Rust, Node.js and AWS.',
+    'I build real-time backend systems that keep working when parts of them ' +
+    'fail — mostly Rust and Node.js on AWS.',
   location: 'Noida, Uttar Pradesh, India',
   email: 'ashutoshkmr40@gmail.com',
 
@@ -240,9 +244,9 @@ export const profile = {
   /** Each string is its own paragraph. */
   about: [
     'Eight years of full-time engineering, the last six at Taazaa, where I have ' +
-      'moved from engineer to lead. Most of my work is distributed systems that ' +
-      'have to stay correct under load and under failure — real-time services, ' +
-      'event-driven pipelines, and the serverless infrastructure underneath them.',
+      'moved from engineer to lead. The work is mostly event-driven and ' +
+      'serverless — services talking to each other across a network, and all ' +
+      'the coordination problems that come with that.',
     'Leading has mostly meant less time in the editor and more on design review, ' +
       'mentoring, and making sure the people around me are unblocked. I have ' +
       'shipped enough C#, Vue, Angular and Flutter over the years to be useful ' +
