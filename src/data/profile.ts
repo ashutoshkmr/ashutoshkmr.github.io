@@ -115,7 +115,7 @@ const work: Job[] = [
     company: 'EventsMosaic',
     role: 'Web Development Intern',
     start: 'Feb 2016',
-    end: 'Jan 2018',
+    end: 'Jan 2017',
     location: 'New Delhi, India',
     summary:
       'Built the web platform for an events marketplace connecting users, ' +

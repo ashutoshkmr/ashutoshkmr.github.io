@@ -103,9 +103,13 @@ const contacts = [
                 <div class="role">
                   <div class="row">
                     <h4 class="role__title">{role.role}</h4>
-                    <span class="row__meta">
-                      {role.start} — {role.end}
-                    </span>
+                    {/* With a single role the company tenure above already
+                        states these dates — printing them twice reads as noise. */}
+                    {c.roles.length > 1 && (
+                      <span class="row__meta">
+                        {role.start} — {role.end}
+                      </span>
+                    )}
                   </div>
                   <p class="role__summary">{role.summary}</p>
                   {role.highlights && role.highlights.length > 0 && (
@@ -189,7 +193,20 @@ const contacts = [
 
   @page {
     size: A4;
-    margin: 13mm 14mm;
+    margin: 12mm 13mm;
+  }
+
+  /* Print type scale. Tune the whole resume from here — every size below
+     references these, so nothing drifts out of proportion. */
+  :root {
+    --pt-name: 25pt;
+    --pt-role: 13.2pt;
+    --pt-company: 12.8pt;
+    --pt-title: 11.4pt;
+    --pt-body: 11.2pt;
+    --pt-small: 10.2pt;
+    --pt-meta: 9.4pt;
+    --pt-label: 8.6pt;
   }
 
   * {
@@ -201,8 +218,8 @@ const contacts = [
     background: #eceae6;
     color: #14140f;
     font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
-    font-size: 10pt;
-    line-height: 1.45;
+    font-size: var(--pt-body);
+    line-height: 1.42;
     -webkit-font-smoothing: antialiased;
     padding: 2rem 1rem 4rem;
   }
@@ -211,7 +228,7 @@ const contacts = [
     background: #fff;
     max-width: 210mm;
     margin-inline: auto;
-    padding: 13mm 14mm;
+    padding: 12mm 13mm;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12);
   }
 
@@ -232,19 +249,19 @@ const contacts = [
   }
 
   .head h1 {
-    font-size: 22pt;
+    font-size: var(--pt-name);
     letter-spacing: -0.03em;
   }
 
   .head__role {
-    font-size: 11.5pt;
+    font-size: var(--pt-role);
     color: #45443c;
     margin-top: 0.5mm;
   }
 
   .head__contacts {
     font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 7.8pt;
+    font-size: var(--pt-meta);
     color: #45443c;
     margin-top: 2.5mm;
     line-height: 1.7;
@@ -269,7 +286,7 @@ const contacts = [
 
   .block h2 {
     font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 7.6pt;
+    font-size: var(--pt-label);
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -295,7 +312,7 @@ const contacts = [
 
   .row__meta {
     font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 7.8pt;
+    font-size: var(--pt-meta);
     color: #6b6960;
     white-space: nowrap;
     flex-shrink: 0;
@@ -313,12 +330,12 @@ const contacts = [
   }
 
   .company__name {
-    font-size: 11pt;
+    font-size: var(--pt-company);
     letter-spacing: -0.01em;
   }
 
   .company__location {
-    font-size: 8.4pt;
+    font-size: var(--pt-small);
     color: #6b6960;
     margin-top: 0.3mm;
   }
@@ -330,7 +347,7 @@ const contacts = [
   }
 
   .role__title {
-    font-size: 9.6pt;
+    font-size: var(--pt-title);
     font-weight: 600;
   }
 
@@ -350,14 +367,14 @@ const contacts = [
   }
 
   .tech {
-    font-size: 8.4pt;
+    font-size: var(--pt-small);
     color: #45443c;
     margin-top: 2.2mm;
   }
 
   .tech__label {
     font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 7.2pt;
+    font-size: var(--pt-label);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #8c8a80;
@@ -366,18 +383,24 @@ const contacts = [
 
   /* ── Skills ─────────────────────────────────────────────────────────── */
 
+  /* The skills table is short; splitting it across a page break reads as a
+     mistake. Move it whole. */
+  .skills {
+    break-inside: avoid;
+  }
+
   .skills__row {
     display: grid;
-    grid-template-columns: 22mm 1fr;
+    grid-template-columns: 24mm 1fr;
     gap: 3mm;
     margin-bottom: 1.4mm;
   }
 
   .skills__row dt {
     font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 7.6pt;
+    font-size: var(--pt-meta);
     color: #6b6960;
-    padding-top: 0.6mm;
+    padding-top: 0.4mm;
   }
 
   .skills__row dd {
@@ -396,7 +419,7 @@ const contacts = [
   }
 
   .project__name {
-    font-size: 9.8pt;
+    font-size: var(--pt-title);
   }
 
   .project__blurb {
@@ -405,12 +428,12 @@ const contacts = [
   }
 
   .school__name {
-    font-size: 9.8pt;
+    font-size: var(--pt-title);
   }
 
   .school__degree {
     color: #45443c;
-    font-size: 9.2pt;
+    font-size: var(--pt-small);
   }
 
   /* ── Print affordance ───────────────────────────────────────────────── */
@@ -421,7 +444,7 @@ const contacts = [
     right: 1rem;
     z-index: 10;
     font: inherit;
-    font-size: 8.5pt;
+    font-size: 9pt;
     background: #14140f;
     color: #fff;
     border: none;
