@@ -1,0 +1,19 @@
+---
+import { profile } from '../data/profile';
+---
+
+<ol class="entries">
+  {
+    profile.education.map((item) => (
+      <li class="entry">
+        <p class="entry__period">
+          {item.start} — {item.end}
+        </p>
+        <div>
+          <h3 class="entry__title">{item.school}</h3>
+          <p class="entry__meta">{item.degree}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>

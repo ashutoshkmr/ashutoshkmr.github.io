@@ -1,0 +1,83 @@
+---
+import { profile } from '../data/profile';
+import ArrowIcon from './ArrowIcon.astro';
+
+const elsewhere = [
+  { label: 'GitHub', href: profile.social.github },
+  { label: 'LinkedIn', href: profile.social.linkedin },
+  profile.social.x ? { label: 'X', href: profile.social.x } : null,
+  { label: 'Résumé', href: profile.social.resume },
+].filter((link): link is { label: string; href: string } => link !== null);
+---
+
+<div class="contact">
+  <p class="contact__lead measure">
+    The fastest way to reach me is email. I read everything, and I reply to
+    anything that isn't a template.
+  </p>
+
+  <a class="contact__email" href={`mailto:${profile.email}`}>
+    {profile.email}
+    <ArrowIcon />
+  </a>
+
+  <ul class="contact__links">
+    {
+      elsewhere.map((link) => (
+        <li>
+          <a
+            class="arrow-link"
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {link.label}
+            <ArrowIcon />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .contact__lead {
+    color: var(--text-muted);
+  }
+
+  .contact__email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: var(--step-3);
+    font-weight: 560;
+    letter-spacing: -0.025em;
+    text-decoration: none;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .contact__email :global(svg) {
+    width: 0.5em;
+    height: 0.5em;
+    color: var(--text-faint);
+    transition: transform 0.18s var(--ease), color 0.18s var(--ease);
+  }
+
+  .contact__email:hover {
+    color: var(--accent);
+  }
+
+  .contact__email:hover :global(svg) {
+    color: var(--accent);
+    transform: translate(3px, -3px);
+  }
+
+  .contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 2rem;
+  }
+</style>

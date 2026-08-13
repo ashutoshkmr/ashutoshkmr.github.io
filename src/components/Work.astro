@@ -1,0 +1,70 @@
+---
+import { profile } from '../data/profile';
+import ArrowIcon from './ArrowIcon.astro';
+---
+
+<ol class="entries">
+  {
+    profile.work.map((job) => (
+      <li class="entry">
+        <p class="entry__period">
+          {job.start} — {job.end}
+        </p>
+
+        <div>
+          <h3 class="entry__title">
+            {job.role}
+            <span class="entry__at">
+              {job.url ? (
+                <a
+                  class="arrow-link company-link"
+                  href={job.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {job.company}
+                  <ArrowIcon />
+                </a>
+              ) : (
+                job.company
+              )}
+            </span>
+          </h3>
+
+          {job.location && <p class="entry__meta">{job.location}</p>}
+
+          <p class="entry__summary">{job.summary}</p>
+
+          {job.highlights && job.highlights.length > 0 && (
+            <ul class="entry__highlights">
+              {job.highlights.map((highlight) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+          )}
+
+          {job.tech && job.tech.length > 0 && (
+            <ul class="tags">
+              {job.tech.map((item) => (
+                <li class="tag">{item}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .company-link {
+    font-size: inherit;
+    font-family: inherit;
+    color: var(--text-faint);
+  }
+
+  .company-link :global(svg) {
+    width: 0.55em;
+    height: 0.55em;
+  }
+</style>

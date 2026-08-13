@@ -1,0 +1,228 @@
+---
+import { profile } from '../data/profile';
+
+const links = [
+  { label: 'About', href: '#about' },
+  { label: 'Work', href: '#work' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Stack', href: '#stack' },
+  { label: 'Contact', href: '#contact' },
+];
+
+const initials = profile.name
+  .split(' ')
+  .map((part) => part[0])
+  .join('');
+---
+
+<header class="site-header">
+  <div class="site-header__inner shell">
+    <a class="monogram" href="#top" aria-label={`${profile.name} — back to top`}>
+      {initials}
+    </a>
+
+    <nav class="site-nav" aria-label="Sections">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} data-nav-link>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button class="theme-toggle" type="button" aria-label="Switch colour theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M20 13.2A8.2 8.2 0 0 1 10.8 4a8.4 8.4 0 1 0 9.2 9.2Z"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linejoin="round"></path>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"></circle>
+        <path
+          d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M4.8 12H2.6M18.6 5.4 17 7M7 17l-1.6 1.6M18.6 18.6 17 17M7 7 5.4 5.4"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s var(--ease);
+  }
+
+  /* Only show the rule once the page has scrolled away from the top. */
+  @supports (animation-timeline: scroll()) {
+    .site-header {
+      animation: header-rule linear both;
+      animation-timeline: scroll();
+      animation-range: 0 6rem;
+    }
+
+    @keyframes header-rule {
+      to {
+        border-bottom-color: var(--rule);
+      }
+    }
+  }
+
+  @supports not (animation-timeline: scroll()) {
+    .site-header {
+      border-bottom-color: var(--rule);
+    }
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 3.75rem;
+  }
+
+  .monogram {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    padding: 0.3rem 0.5rem;
+    line-height: 1;
+    transition: border-color 0.18s var(--ease), color 0.18s var(--ease);
+  }
+
+  .monogram:hover {
+    border-color: var(--accent);
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: clamp(0.9rem, 2.4vw, 1.9rem);
+  }
+
+  .site-nav a {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    text-decoration: none;
+    position: relative;
+    padding-block: 0.35rem;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.1rem;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.22s var(--ease);
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current] {
+    color: var(--text);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a[aria-current]::after {
+    transform: scaleX(1);
+  }
+
+  .theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+  }
+
+  .theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--rule);
+  }
+
+  .theme-toggle svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  /* Show the icon for the theme the button switches *to*. */
+  .icon-sun {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .icon-moon {
+      display: none;
+    }
+
+    :root:not([data-theme='light']) .icon-sun {
+      display: block;
+    }
+  }
+
+  :root[data-theme='dark'] .icon-moon {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .icon-sun {
+    display: block;
+  }
+
+  :root[data-theme='light'] .icon-moon {
+    display: block;
+  }
+
+  :root[data-theme='light'] .icon-sun {
+    display: none;
+  }
+
+  @media (max-width: 40rem) {
+    .site-nav {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
+
+  const resolved = () =>
+    root.dataset.theme ??
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  toggle?.addEventListener('click', () => {
+    const next = resolved() === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // Private mode or storage disabled — the choice just won't persist.
+    }
+  });
+</script>

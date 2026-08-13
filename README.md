@@ -1,109 +1,92 @@
-*Psst — looking for a more complete solution? Check out [SvelteKit](https://kit.svelte.dev), the official framework for building web applications of all sizes, with a beautiful development experience and flexible filesystem-based routing.*
+# ashutoshkmr.github.io
 
-*Looking for a shareable component template instead? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+Personal site and portfolio, built with [Astro](https://astro.build) and deployed
+to GitHub Pages.
 
 ---
 
-# svelte app
+## ⚠️ One-time setup required before this goes live
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+The old site was plain HTML served straight from the repository root. This one is
+built by GitHub Actions, so the Pages source has to change or **the site will 404
+after merging**:
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+1. Go to **Settings → Pages** in this repository.
+2. Under **Build and deployment → Source**, select **GitHub Actions**
+   (it is currently set to *Deploy from a branch*).
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+That's it — every push to `master` then builds and deploys automatically via
+`.github/workflows/deploy.yml`.
+
+---
+
+## Editing the content
+
+**All content lives in [`src/data/profile.ts`](src/data/profile.ts).** Nothing
+else needs touching to change what the site says — name, role, about, work
+history, projects, stack, education, and links all come from that one file.
+
+Any field still containing `TODO` is a placeholder. The build prints a warning
+listing every one of them, so they can't ship unnoticed:
+
+```
+⚠  23 placeholders still in src/data/profile.ts:
+   · role
+   · tagline
+   · work[0].company
+   ...
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+Placeholder text is also kept out of the `<title>` and meta description, so an
+early deploy won't put "TODO" into search results or link previews.
 
+To replace the résumé, drop a new PDF at `public/resume.pdf`.
 
-## Get started
-
-Install the dependencies...
+## Local development
 
 ```bash
-cd svelte-app
 npm install
+npm run dev      # http://localhost:4321
 ```
 
-...then start [Rollup](https://rollupjs.org):
+| Command           | Does                                        |
+| ----------------- | ------------------------------------------- |
+| `npm run dev`     | Dev server with hot reload                  |
+| `npm run build`   | Production build to `dist/`                 |
+| `npm run preview` | Serve the built site locally                |
+| `npm run check`   | Type-check `.astro` and `.ts` files         |
 
-```bash
-npm run dev
+## Structure
+
+```
+src/
+├── data/profile.ts       ← all site content
+├── layouts/Base.astro    ← <head>, SEO, theme script, scroll behaviour
+├── components/           ← Hero, Work, Projects, Stack, Contact, …
+├── styles/global.css     ← design tokens, typography, layout primitives
+└── pages/
+    ├── index.astro       ← the single page
+    └── 404.astro
+public/                   ← favicon, OG image, résumé, robots.txt
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+## Design notes
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+- **Typography-led, single column.** Section labels sit in a sticky left rail;
+  content sits in a reading column capped at `68ch`.
+- **Three-state theming.** Light and dark palettes follow the OS by default, and
+  an explicit toggle overrides it (stored in `localStorage`). The theme is applied
+  by an inline script before first paint, so there's no flash of the wrong theme.
+- **Fonts are self-hosted** (Inter and JetBrains Mono, variable) — no external
+  requests, so the site keeps working regardless of third-party availability.
+- **Motion is optional.** Scroll reveals and the availability pulse are wrapped in
+  `prefers-reduced-motion: no-preference`, and anything at or above the fold is
+  revealed synchronously so a deep link never lands on a blank screen.
+- **No client framework.** The only JavaScript shipped is the theme toggle and two
+  IntersectionObservers.
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+## Regenerating the social image
 
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
-npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+`public/og.png` and `public/apple-touch-icon.png` are static images rendered from
+the site's own fonts. They only need regenerating if the name or domain changes —
+edit the images directly, or re-render them from an HTML template at 1200×630.

@@ -1,0 +1,136 @@
+---
+import { profile } from '../data/profile';
+import ArrowIcon from './ArrowIcon.astro';
+
+const links = [
+  { label: 'Email', href: `mailto:${profile.email}` },
+  { label: 'GitHub', href: profile.social.github },
+  { label: 'LinkedIn', href: profile.social.linkedin },
+  profile.social.x ? { label: 'X', href: profile.social.x } : null,
+  { label: 'Résumé', href: profile.social.resume },
+].filter((link): link is { label: string; href: string } => link !== null);
+---
+
+<section class="hero" id="top">
+  <div class="shell">
+    <div class="hero__inner">
+      {
+        profile.availability && (
+          <p class="pill">
+            <span class="pill__dot" aria-hidden="true" />
+            {profile.availability}
+          </p>
+        )
+      }
+
+      <h1 class="hero__name">{profile.name}</h1>
+
+      <p class="hero__role">{profile.role}</p>
+
+      <p class="hero__tagline measure">{profile.tagline}</p>
+
+      <ul class="hero__links">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                class="arrow-link"
+                href={link.href}
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+                rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                {link.label}
+                <ArrowIcon />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="hero__location eyebrow">{profile.location}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(3.5rem, 12vh, 7rem) 0;
+  }
+
+  .hero__inner {
+    max-width: var(--shell);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    background: var(--accent-wash);
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    border-radius: 100px;
+    padding: 0.3rem 0.75rem 0.3rem 0.6rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .pill__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pill__dot {
+      animation: pulse 2.6s var(--ease) infinite;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 var(--accent-wash);
+      }
+      50% {
+        opacity: 0.65;
+        box-shadow: 0 0 0 0.28rem transparent;
+      }
+    }
+  }
+
+  .hero__name {
+    font-size: var(--step-4);
+    font-weight: 620;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .hero__role {
+    font-size: var(--step-2);
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: -0.015em;
+    margin-top: 0.5rem;
+  }
+
+  .hero__tagline {
+    margin-top: 1.6rem;
+    color: var(--text-muted);
+    font-size: var(--step-1);
+    line-height: 1.6;
+  }
+
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 2.25rem;
+  }
+
+  .hero__location {
+    margin-top: 2.75rem;
+  }
+</style>

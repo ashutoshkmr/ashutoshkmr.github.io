@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import { profile } from '../data/profile';
+---
+
+<Base
+  title={`Page not found — ${profile.name}`}
+  description="That page doesn't exist."
+  bare
+>
+  <div class="notfound shell">
+    <p class="eyebrow">Error 404</p>
+    <h1>This page doesn't exist.</h1>
+    <p class="notfound__body measure">
+      The link may be out of date, or the page may have moved. The old
+      slide-deck portfolio that used to live here has been retired.
+    </p>
+    <a class="arrow-link notfound__home" href="/">
+      Back to the homepage
+      <ArrowIcon />
+    </a>
+  </div>
+</Base>
+
+<style>
+  .notfound {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 4rem;
+  }
+
+  .notfound h1 {
+    font-size: var(--step-3);
+    margin-top: 0.75rem;
+  }
+
+  .notfound__body {
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+
+  .notfound__home {
+    margin-top: 2rem;
+    align-self: flex-start;
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import { profile } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <p class="eyebrow">© {year} {profile.name}</p>
+    <p class="eyebrow">
+      Built with <a href="https://astro.build" rel="noopener noreferrer" target="_blank"
+        >Astro</a
+      > · <a
+        href={`${profile.social.github}/ashutoshkmr.github.io`}
+        rel="noopener noreferrer"
+        target="_blank">Source</a
+      >
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--section-gap);
+    border-top: 1px solid var(--rule);
+    padding-block: 2rem 3rem;
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .site-footer a {
+    color: var(--text-muted);
+  }
+</style>

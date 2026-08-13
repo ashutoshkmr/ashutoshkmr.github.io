@@ -1,0 +1,66 @@
+---
+import { profile } from '../data/profile';
+---
+
+<dl class="stack">
+  {
+    profile.stack.map((group) => (
+      <div class="stack__group">
+        <dt class="stack__title">{group.title}</dt>
+        <dd>
+          <ul class="tags stack__tags">
+            {group.items.map((item) => (
+              <li class="tag">{item}</li>
+            ))}
+          </ul>
+        </dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .stack {
+    display: grid;
+    gap: 0;
+  }
+
+  .stack__group {
+    display: grid;
+    grid-template-columns: var(--meta-col) minmax(0, 1fr);
+    gap: 0 clamp(1rem, 2.5vw, 2rem);
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stack__group:first-child {
+    padding-top: 0;
+  }
+
+  .stack__group:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .stack__title {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    padding-top: 0.3rem;
+  }
+
+  .stack__group dd {
+    margin: 0;
+  }
+
+  .stack__tags {
+    margin-top: 0;
+  }
+
+  @media (max-width: 34rem) {
+    .stack__group {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>
