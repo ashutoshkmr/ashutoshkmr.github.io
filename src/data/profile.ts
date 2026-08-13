@@ -200,12 +200,19 @@ export const profile = {
   name: 'Ashutosh Kumar',
   role: 'Lead Engineer',
   /**
-   * The hero line, and the meta description. Deliberately does not restate the
-   * job title rendered directly above it.
+   * The hero line. Deliberately a fragment, not a sentence, and deliberately
+   * does not restate the job title rendered directly above it.
    */
-  tagline:
-    'I build real-time backend systems that keep working when parts of them ' +
-    'fail — mostly Rust and Node.js on AWS.',
+  tagline: 'Distributed systems, mostly event-driven. Rust, Node.js, AWS.',
+
+  /**
+   * The <meta description> and link-preview text. Separate from `tagline`
+   * because the hero reads best as a fragment, and a fragment makes a poor
+   * search snippet. Aim for 120–155 characters.
+   */
+  seoDescription:
+    'Lead Engineer building event-driven distributed systems in Rust and ' +
+    'Node.js on AWS. Eight years across backend, cloud and mobile.',
   location: 'Noida, Uttar Pradesh, India',
   email: 'ashutoshkmr40@gmail.com',
 
@@ -244,9 +251,9 @@ export const profile = {
   /** Each string is its own paragraph. */
   about: [
     'Eight years of full-time engineering, the last six at Taazaa, where I have ' +
-      'moved from engineer to lead. The work is mostly event-driven and ' +
-      'serverless — services talking to each other across a network, and all ' +
-      'the coordination problems that come with that.',
+      'moved from engineer to lead. Most of that time has gone on services that ' +
+      'talk to each other across a network, and on the coordination problems ' +
+      'that come with that.',
     'Leading has mostly meant less time in the editor and more on design review, ' +
       'mentoring, and making sure the people around me are unblocked. I have ' +
       'shipped enough C#, Vue, Angular and Flutter over the years to be useful ' +
