@@ -1,0 +1,30 @@
+{
+  "name": "ashutoshkmr.github.io",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashutoshkmr/ashutoshkmr.github.io.git"
+  },
+  "author": "Ashutosh Kumar <ashutoshkmr40@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://ashutoshkmr.github.io",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "astro": "^5.16.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.3"
+  }
+}

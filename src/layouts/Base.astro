@@ -1,0 +1,143 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+import { profile } from '../data/profile';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Suppress the sticky header + footer on utility pages like 404. */
+  bare?: boolean;
+}
+
+const { title, description, bare = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  url: Astro.site?.href,
+  email: `mailto:${profile.email}`,
+  jobTitle: profile.role,
+  sameAs: [profile.social.github, profile.social.linkedin, profile.social.x].filter(
+    Boolean,
+  ),
+};
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script is:inline set:html={JSON.stringify(personSchema)} type="application/ld+json" />
+
+    {/* Applies the saved theme before first paint so the page never flashes. */}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        root.classList.remove('no-js');
+        try {
+          const saved = localStorage.getItem('theme');
+          if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+        } catch {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {!bare && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+
+    <script>
+      // Reveal sections as they enter the viewport. Anything already on screen
+      // is shown immediately so the first paint is never empty.
+      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+        );
+
+        targets.forEach((el) => {
+          // Reveal anything already at or above the fold synchronously. Without
+          // this, loading a deep link like /#contact can paint an empty screen
+          // in the gap before the observer's first callback.
+          if (el.getBoundingClientRect().top < window.innerHeight) {
+            el.classList.add('is-visible');
+          } else {
+            observer.observe(el);
+          }
+        });
+      } else {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Highlight the nav link for the section currently in view.
+      const navLinks = new Map<string, HTMLAnchorElement>();
+      document
+        .querySelectorAll<HTMLAnchorElement>('[data-nav-link]')
+        .forEach((link) => navLinks.set(link.hash.slice(1), link));
+
+      const sections = [...navLinks.keys()]
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      if (sections.length > 0) {
+        const spy = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              const link = navLinks.get(entry.target.id);
+              if (!link) continue;
+              if (entry.isIntersecting) {
+                navLinks.forEach((other) => other.removeAttribute('aria-current'));
+                link.setAttribute('aria-current', 'true');
+              }
+            }
+          },
+          { rootMargin: '-45% 0px -50% 0px' },
+        );
+        sections.forEach((section) => spy.observe(section));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+---
+import { profile } from '../data/profile';
+import ArrowIcon from './ArrowIcon.astro';
+
+// Featured first, then newest first within each group.
+const projects = [...profile.projects].sort((a, b) => {
+  if (Boolean(a.featured) !== Boolean(b.featured)) return a.featured ? -1 : 1;
+  return b.year.localeCompare(a.year);
+});
+---
+
+<ol class="entries">
+  {
+    projects.map((project) => (
+      <li class:list={['entry', project.featured && 'entry--featured']}>
+        <p class="entry__period">{project.year}</p>
+
+        <div>
+          <h3 class="entry__title">
+            {project.name}
+            {project.archived && (
+              <span class="badge" title="No longer maintained">
+                archived
+              </span>
+            )}
+          </h3>
+
+          <p class="entry__summary">{project.blurb}</p>
+
+          {project.tech.length > 0 && (
+            <ul class="tags">
+              {project.tech.map((item) => (
+                <li class="tag">{item}</li>
+              ))}
+            </ul>
+          )}
+
+          {project.links && project.links.length > 0 && (
+            <ul class="project__links">
+              {project.links.map((link) => (
+                <li>
+                  <a
+                    class="arrow-link"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.label}
+                    <ArrowIcon />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .entry--featured .entry__title {
+    font-size: var(--step-2);
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 0.1rem 0.45rem;
+    align-self: center;
+  }
+
+  .project__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 0.95rem;
+  }
+</style>
