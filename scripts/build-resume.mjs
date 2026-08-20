@@ -99,55 +99,74 @@ const { port } = server.address();
 /* ── Print ──────────────────────────────────────────────────────────────── */
 
 const chrome = findChrome();
-const tmp = path.join(os.tmpdir(), `resume-${process.pid}.pdf`);
-
-const flags = [
-  '--headless',
-  '--disable-gpu',
-  '--no-pdf-header-footer',
-  // Fast-forward timers/network so web fonts are settled before printing.
-  '--virtual-time-budget=10000',
-  `--print-to-pdf=${tmp}`,
-];
-// Root (containers, CI images) cannot use the sandbox.
-if (typeof process.getuid === 'function' && process.getuid() === 0)
-  flags.unshift('--no-sandbox');
 
 // Chrome must run asynchronously: the file server above lives on this same
 // event loop, and a synchronous exec would block it from ever responding.
-await new Promise((resolve, reject) => {
-  const child = spawn(chrome, [...flags, `http://127.0.0.1:${port}/resume/`], {
-    stdio: ['ignore', 'ignore', 'pipe'],
+async function printRoute(route) {
+  const tmp = path.join(os.tmpdir(), `resume-${process.pid}-${route.replace(/\W/g, '')}.pdf`);
+  const flags = [
+    '--headless',
+    '--disable-gpu',
+    '--no-pdf-header-footer',
+    // Fast-forward timers/network so web fonts are settled before printing.
+    '--virtual-time-budget=10000',
+    `--print-to-pdf=${tmp}`,
+  ];
+  // Root (containers, CI images) cannot use the sandbox.
+  if (typeof process.getuid === 'function' && process.getuid() === 0)
+    flags.unshift('--no-sandbox');
+
+  await new Promise((resolve, reject) => {
+    const child = spawn(chrome, [...flags, `http://127.0.0.1:${port}${route}`], {
+      stdio: ['ignore', 'ignore', 'pipe'],
+    });
+    let stderr = '';
+    child.stderr.on('data', (d) => (stderr += d));
+    const timer = setTimeout(() => {
+      child.kill();
+      reject(new Error(`Chrome took more than 60s to print ${route}.`));
+    }, 60_000);
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      if (code === 0 && fs.existsSync(tmp)) resolve();
+      else reject(new Error(`Chrome exited with ${code} on ${route}.\n${stderr.slice(-2000)}`));
+    });
   });
-  let stderr = '';
-  child.stderr.on('data', (d) => (stderr += d));
-  const timer = setTimeout(() => {
-    child.kill();
-    reject(new Error('Chrome took more than 60s to print.'));
-  }, 60_000);
-  child.on('close', (code) => {
-    clearTimeout(timer);
-    if (code === 0 && fs.existsSync(tmp)) resolve();
-    else reject(new Error(`Chrome exited with ${code}.\n${stderr.slice(-2000)}`));
-  });
-});
+
+  const bytes = fs.readFileSync(tmp);
+  fs.rmSync(tmp);
+  return bytes;
+}
+
+/* ── Metadata + write helpers ───────────────────────────────────────────── */
+
+function write(name, bytes, note) {
+  for (const out of [path.join(root, 'public', name), path.join(dist, name)]) {
+    fs.writeFileSync(out, bytes);
+    console.log(`wrote ${path.relative(root, out)} (${(bytes.length / 1024).toFixed(0)} KB${note ? `, ${note}` : ''})`);
+  }
+}
+
+async function stamp(raw) {
+  const doc = await PDFDocument.load(raw);
+  doc.setTitle(`${profile.name} — Résumé`);
+  doc.setAuthor(profile.name);
+  doc.setSubject(`${profile.role} — résumé of ${profile.name}`);
+  doc.setKeywords([profile.role, ...profile.stack.flatMap((g) => g.items)]);
+  // Classic xref, no object streams: Chrome writes PDF 1.4 and the most
+  // conservative ATS parsers cope with that best — don't upgrade it to 1.5.
+  const bytes = await doc.save({ useObjectStreams: false });
+  return { bytes, pages: doc.getPageCount() };
+}
+
+/* ── Produce all three artifacts ────────────────────────────────────────── */
+
+const a4 = await stamp(await printRoute('/resume/'));
+const letter = await stamp(await printRoute('/resume-letter/'));
 server.close();
 
-/* ── Stamp metadata ─────────────────────────────────────────────────────── */
+write('resume.pdf', a4.bytes, `A4, ${a4.pages} pages`);
+write('resume-letter.pdf', letter.bytes, `US Letter, ${letter.pages} pages`);
 
-const doc = await PDFDocument.load(fs.readFileSync(tmp));
-doc.setTitle(`${profile.name} — Résumé`);
-doc.setAuthor(profile.name);
-doc.setSubject(`${profile.role} — résumé of ${profile.name}`);
-doc.setKeywords([profile.role, ...profile.stack.flatMap((g) => g.items)]);
-// Classic xref, no object streams: Chrome writes PDF 1.4 and the most
-// conservative ATS parsers cope with that best — don't upgrade it to 1.5.
-const bytes = await doc.save({ useObjectStreams: false });
-fs.rmSync(tmp);
-
-/* ── Write ──────────────────────────────────────────────────────────────── */
-
-for (const out of [path.join(root, 'public', 'resume.pdf'), path.join(dist, 'resume.pdf')]) {
-  fs.writeFileSync(out, bytes);
-  console.log(`wrote ${path.relative(root, out)} (${(bytes.length / 1024).toFixed(0)} KB, ${doc.getPageCount()} pages)`);
-}
+const { buildResumeDocx } = await import('./resume-docx.mjs');
+write('resume.docx', await buildResumeDocx(profile), 'US Letter');

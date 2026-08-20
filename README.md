@@ -51,11 +51,20 @@ npm run build && npm run resume
 ```
 
 [`scripts/build-resume.mjs`](scripts/build-resume.mjs) serves the built site,
-prints `/resume` with headless Chrome, stamps the PDF's author/subject/keyword
-metadata from `profile.ts`, and writes `public/resume.pdf`. **The deploy
-workflow runs the same script on every push**, so the served PDF is always
-generated from the same `profile.ts` as the deployed site — the committed copy
-only matters for local dev.
+prints `/resume` (A4) and `/resume-letter` (US Letter) with headless Chrome,
+stamps author/subject/keyword metadata from `profile.ts`, and builds the Word
+version with [`scripts/resume-docx.mjs`](scripts/resume-docx.mjs). Three
+artifacts, one source:
+
+| File | For |
+| --- | --- |
+| `/resume.pdf` | Default — A4 |
+| `/resume-letter.pdf` | US-based applications — Letter, tightened spacing to hold two pages |
+| `/resume.docx` | Systems that parse Word best — no tables, real bullet numbering, hyperlinked contacts |
+
+**The deploy workflow runs the same script on every push**, so the served files
+are always generated from the same `profile.ts` as the deployed site — the
+committed copies only matter for local dev. The `/resume` page links all three.
 
 Manual fallback: `npm run dev`, open <http://localhost:4321/resume>, hit
 **Print / Save as PDF**, save over `public/resume.pdf`.
@@ -95,10 +104,13 @@ src/
 ├── styles/global.css     ← design tokens, typography, layout primitives
 └── pages/
     ├── index.astro       ← the site
-    ├── resume.astro      ← the résumé, print-optimised
+    ├── resume.astro          ← /resume, A4 (renders ResumeSheet)
+    ├── resume-letter.astro   ← /resume-letter, US Letter
     └── 404.astro
-scripts/build-resume.mjs  ← prints /resume to public/resume.pdf via Chrome
-public/                   ← favicon, OG image, résumé PDF, robots.txt
+scripts/
+├── build-resume.mjs      ← prints both PDFs via Chrome, then builds the DOCX
+└── resume-docx.mjs       ← resume.docx from profile.ts (docx-js)
+public/                   ← favicon, OG image, résumé PDF/DOCX, robots.txt
 ```
 
 ## Design notes
