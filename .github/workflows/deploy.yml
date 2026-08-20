@@ -36,6 +36,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Rebuild resume.pdf from the /resume page so the PDF served is always
+      # generated from the same profile.ts as the deployed site.
+      - name: Generate résumé PDF
+        run: npm run resume
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
