@@ -43,25 +43,36 @@ the site. [`src/pages/resume.astro`](src/pages/resume.astro) renders it as a
 print-optimised A4 page at `/resume`, and `public/resume.pdf` is that page
 printed to PDF.
 
-Easiest way to regenerate: run `npm run dev`, open
-<http://localhost:4321/resume>, hit **Print / Save as PDF**, save over
-`public/resume.pdf`.
-
-Scripted, on Windows:
+Regenerating is one command (needs Node ≥ 22.18 and a local Chrome — set
+`CHROME_PATH` if it lives somewhere unusual):
 
 ```bash
-npm run build
-npx astro preview --port 4321          # leave running in another terminal
-
-"C:\Program Files\Google\Chrome\Application\chrome.exe" \
-  --headless --disable-gpu --no-pdf-header-footer \
-  --print-to-pdf="public/resume.pdf" http://localhost:4321/resume
-
-npm run build                          # copies the new PDF into dist/
+npm run build && npm run resume
 ```
 
-The output is real selectable text in a single column, so applicant tracking
-systems parse it in reading order.
+[`scripts/build-resume.mjs`](scripts/build-resume.mjs) serves the built site,
+prints `/resume` (A4) and `/resume-letter` (US Letter) with headless Chrome,
+stamps author/subject/keyword metadata from `profile.ts`, and builds the Word
+version with [`scripts/resume-docx.mjs`](scripts/resume-docx.mjs). Three
+artifacts, one source:
+
+| File | For |
+| --- | --- |
+| `/resume.pdf` | Default — A4 |
+| `/resume-letter.pdf` | US-based applications — Letter, tightened spacing to hold two pages |
+| `/resume.docx` | Systems that parse Word best — no tables, real bullet numbering, hyperlinked contacts |
+
+**The deploy workflow runs the same script on every push**, so the served files
+are always generated from the same `profile.ts` as the deployed site — the
+committed copies only matter for local dev. The `/resume` page links all three.
+
+Manual fallback: `npm run dev`, open <http://localhost:4321/resume>, hit
+**Print / Save as PDF**, save over `public/resume.pdf`.
+
+The output is what applicant tracking systems parse best: a tagged PDF of real
+selectable text in a single column with standard section headings, en-dash date
+ranges, text-layer bullet glyphs, clickable contact links, and a classic
+(uncompressed) xref that pre-1.5 parsers can read.
 
 **Type size** is a set of custom properties (`--pt-body`, `--pt-meta`, …) at the
 top of the stylesheet in `resume.astro`. Change those to rescale the whole
@@ -93,9 +104,13 @@ src/
 ├── styles/global.css     ← design tokens, typography, layout primitives
 └── pages/
     ├── index.astro       ← the site
-    ├── resume.astro      ← the résumé, print-optimised
+    ├── resume.astro          ← /resume, A4 (renders ResumeSheet)
+    ├── resume-letter.astro   ← /resume-letter, US Letter
     └── 404.astro
-public/                   ← favicon, OG image, résumé PDF, robots.txt
+scripts/
+├── build-resume.mjs      ← prints both PDFs via Chrome, then builds the DOCX
+└── resume-docx.mjs       ← resume.docx from profile.ts (docx-js)
+public/                   ← favicon, OG image, résumé PDF/DOCX, robots.txt
 ```
 
 ## Design notes

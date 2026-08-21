@@ -17,6 +17,8 @@ const { title, description, bare = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL('/og.png', Astro.site).href;
 
+const currentJob = profile.work[0]?.end === 'Present' ? profile.work[0] : undefined;
+
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -24,6 +26,9 @@ const personSchema = {
   url: Astro.site?.href,
   email: `mailto:${profile.email}`,
   jobTitle: profile.role,
+  ...(currentJob && {
+    worksFor: { '@type': 'Organization', name: currentJob.company },
+  }),
   sameAs: [profile.social.github, profile.social.linkedin, profile.social.x].filter(
     Boolean,
   ),

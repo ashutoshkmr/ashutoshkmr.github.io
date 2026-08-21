@@ -263,7 +263,7 @@ export const profile = {
    * Shown as a pill at the top of the page. Set a string to show it, e.g.
    * 'Open to staff and principal engineering roles'. null hides it.
    */
-  availability: null as string | null,
+  availability: 'Open to staff and principal engineering roles' as string | null,
 
   /* ── Links ────────────────────────────────────────────────────────────── */
   social: {

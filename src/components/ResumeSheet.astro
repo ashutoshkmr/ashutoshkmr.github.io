@@ -1,0 +1,601 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import { profile, type Job } from '../data/profile';
+
+/*
+ * The résumé sheet, rendered by /resume (A4) and /resume-letter (US Letter).
+ * public/resume.pdf and public/resume-letter.pdf are printed FROM those pages,
+ * so nothing can drift — everything is driven by src/data/profile.ts, same as
+ * the rest of the site. See the README for the regeneration command.
+ */
+
+interface Props {
+  paper?: 'a4' | 'letter';
+}
+
+const { paper = 'a4' } = Astro.props;
+
+type Company = {
+  company: string;
+  location?: string;
+  url?: string;
+  roles: Job[];
+};
+
+// Collapse consecutive roles at the same employer into one block, so a
+// promotion reads as progression rather than three separate jobs.
+const companies: Company[] = [];
+for (const job of profile.work) {
+  const current = companies.at(-1);
+  if (current && current.company === job.company) {
+    current.roles.push(job);
+    current.url ??= job.url;
+  } else {
+    companies.push({
+      company: job.company,
+      location: job.location,
+      url: job.url,
+      roles: [job],
+    });
+  }
+}
+
+/** Span across every role held at one employer. */
+// En dash, not em: the widest-parsed date separator in ATS date-range regexes.
+const tenure = (c: Company) => `${c.roles.at(-1)!.start} – ${c.roles[0]!.end}`;
+
+/** Union of the tech listed on each role, first occurrence wins. */
+const techFor = (c: Company) => [...new Set(c.roles.flatMap((r) => r.tech ?? []))];
+
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+
+type Contact = { text: string; href?: string };
+
+// Real hyperlinks where they help a recruiter; plain text renders identically.
+const contacts: Contact[] = (
+  [
+    { text: profile.location },
+    { text: profile.email, href: `mailto:${profile.email}` },
+    profile.phone
+      ? { text: profile.phone, href: `tel:${profile.phone.replace(/[^+\d]/g, '')}` }
+      : null,
+    { text: bare(profile.social.github), href: profile.social.github },
+    { text: bare(profile.social.linkedin), href: profile.social.linkedin },
+  ] as (Contact | null)[]
+).filter((c): c is Contact => c !== null);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${profile.name} — Résumé${paper === 'letter' ? ' (US Letter)' : ''}`}</title>
+    <meta name="description" content={`Résumé of ${profile.name}, ${profile.role}.`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="robots" content="noindex" />
+  </head>
+
+  <body>
+    <nav class="tools" aria-label="Print and download">
+      <button class="tools__print" type="button" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+      <a class="tools__link" aria-current={paper === 'a4' ? 'true' : undefined} href="/resume.pdf">A4 PDF</a>
+      <a class="tools__link" aria-current={paper === 'letter' ? 'true' : undefined} href="/resume-letter.pdf">US Letter PDF</a>
+      <a class="tools__link" href="/resume.docx">DOCX</a>
+    </nav>
+
+    <main class={`sheet paper-${paper}`}>
+      <header class="head">
+        <h1>{profile.name}</h1>
+        <p class="head__role">{profile.role}</p>
+        <p class="head__contacts">
+          {
+            contacts.map((item, i) => (
+              <>
+                {i > 0 && <span class="sep">·</span>}
+                {item.href ? (
+                  <a class="nowrap" href={item.href}>
+                    {item.text}
+                  </a>
+                ) : (
+                  <span class="nowrap">{item.text}</span>
+                )}
+              </>
+            ))
+          }
+        </p>
+      </header>
+
+      <section class="block">
+        <h2>Summary</h2>
+        <p class="summary">{profile.summary}</p>
+      </section>
+
+      <section class="block">
+        <h2>Experience</h2>
+        {
+          companies.map((c) => (
+            <article class="company">
+              <div class="row">
+                <h3 class="company__name">{c.company}</h3>
+                <span class="row__meta">{tenure(c)}</span>
+              </div>
+              {c.location && <p class="company__location">{c.location}</p>}
+
+              {c.roles.map((role) => (
+                <div class="role">
+                  <div class="row">
+                    <h4 class="role__title">{role.role}</h4>
+                    {/* With a single role the company tenure above already
+                        states these dates — printing them twice reads as noise. */}
+                    {c.roles.length > 1 && (
+                      <span class="row__meta">
+                        {role.start} – {role.end}
+                      </span>
+                    )}
+                  </div>
+                  <p class="role__summary">{role.summary}</p>
+                  {role.highlights && role.highlights.length > 0 && (
+                    <ul class="bullets">
+                      {role.highlights.map((h) => (
+                        <li>
+                          {/* A real "•" in the DOM: CSS ::marker glyphs never
+                              reach the PDF text layer, and ATS parsers use the
+                              bullet to recognise achievement lists. */}
+                          <span class="bullets__mark" aria-hidden="true">
+                            •
+                          </span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+
+              {techFor(c).length > 0 && (
+                <p class="tech">
+                  <span class="tech__label">Tech</span>
+                  {techFor(c).join(' · ')}
+                </p>
+              )}
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="block">
+        <h2>Skills</h2>
+        <dl class="skills">
+          {
+            profile.stack.map((group) => (
+              <div class="skills__row">
+                <dt>{group.title}</dt>
+                <dd>{group.items.join(' · ')}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="block">
+        <h2>Projects</h2>
+        {
+          profile.projects.map((project) => (
+            <div class="project">
+              <div class="row">
+                <h3 class="project__name">{project.name}</h3>
+                <span class="row__meta">{project.year}</span>
+              </div>
+              <p class="project__blurb">{project.blurb}</p>
+              <p class="tech">
+                <span class="tech__label">Tech</span>
+                {project.tech.join(' · ')}
+              </p>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="block">
+        <h2>Education</h2>
+        {
+          profile.education.map((school) => (
+            <div class="row">
+              <div>
+                <h3 class="school__name">{school.school}</h3>
+                <p class="school__degree">{school.degree}</p>
+              </div>
+              <span class="row__meta">
+                {school.start} – {school.end}
+              </span>
+            </div>
+          ))
+        }
+      </section>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /* Print-first: black on white, single column so applicant tracking systems
+     parse it in the right order. The screen view is the same sheet on a grey
+     desk. */
+
+  @page {
+    size: A4;
+    margin: 11mm 13mm;
+  }
+
+  /* Print type scale. Tune the whole resume from here — every size below
+     references these, so nothing drifts out of proportion. */
+  :root {
+    --pt-name: 25pt;
+    --pt-role: 13.2pt;
+    --pt-company: 12.8pt;
+    --pt-title: 11.4pt;
+    --pt-body: 11.2pt;
+    --pt-small: 10.2pt;
+    --pt-meta: 9.4pt;
+    --pt-label: 8.6pt;
+  }
+
+  * {
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #eceae6;
+    color: #14140f;
+    font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--pt-body);
+    line-height: 1.38;
+    -webkit-font-smoothing: antialiased;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .sheet {
+    background: #fff;
+    max-width: 210mm;
+    margin-inline: auto;
+    padding: 11mm 13mm;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  /* ── Header ─────────────────────────────────────────────────────────── */
+
+  .head {
+    border-bottom: 1.5px solid #14140f;
+    padding-bottom: 2.6mm;
+    margin-bottom: 4mm;
+  }
+
+  .head h1 {
+    font-size: var(--pt-name);
+    letter-spacing: -0.03em;
+  }
+
+  .head__role {
+    font-size: var(--pt-role);
+    color: #45443c;
+    margin-top: 0.5mm;
+  }
+
+  .head__contacts {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    font-size: var(--pt-meta);
+    color: #45443c;
+    margin-top: 2.5mm;
+    line-height: 1.7;
+  }
+
+  .sep {
+    color: #a8a69c;
+    margin-inline: 1.6mm;
+  }
+
+  /* Keep phone numbers and URLs from breaking across lines. */
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  /* Links exist for the PDF's link annotations and screen readers; on paper
+     they should look exactly like the plain text around them. */
+  .head__contacts a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* ── Blocks ─────────────────────────────────────────────────────────── */
+
+  .block {
+    margin-top: 4.2mm;
+    break-inside: auto;
+  }
+
+  .block h2 {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    font-size: var(--pt-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6b6960;
+    border-bottom: 0.5px solid #d6d3ca;
+    padding-bottom: 1.2mm;
+    margin-bottom: 3mm;
+    /* Never let a section heading sit alone at the foot of a page. */
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .summary {
+    max-width: 62em;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4mm;
+  }
+
+  .row__meta {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    font-size: var(--pt-meta);
+    color: #6b6960;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Experience ─────────────────────────────────────────────────────── */
+
+  .company {
+    margin-bottom: 3.4mm;
+    break-inside: avoid;
+  }
+
+  .company:last-child {
+    margin-bottom: 0;
+  }
+
+  .company__name {
+    font-size: var(--pt-company);
+    letter-spacing: -0.01em;
+  }
+
+  .company__location {
+    font-size: var(--pt-small);
+    color: #6b6960;
+    margin-top: 0.3mm;
+  }
+
+  .role {
+    margin-top: 2mm;
+    padding-left: 3.5mm;
+    border-left: 1px solid #ddd9d0;
+  }
+
+  .role__title {
+    font-size: var(--pt-title);
+    font-weight: 600;
+  }
+
+  .role__summary {
+    color: #35342c;
+    margin-top: 0.6mm;
+  }
+
+  .bullets {
+    margin-top: 1.2mm;
+    padding-left: 0.5mm;
+    list-style: none;
+  }
+
+  .bullets li {
+    display: flex;
+    gap: 1.8mm;
+    margin-bottom: 0.8mm;
+    color: #35342c;
+  }
+
+  .bullets__mark {
+    color: #6b6960;
+    flex-shrink: 0;
+  }
+
+  .tech {
+    font-size: var(--pt-small);
+    color: #45443c;
+    margin-top: 2.2mm;
+  }
+
+  /* Same size as the list it labels: a smaller size than its neighbours makes
+     PDF text extraction pull "TECH" out of line as a stray heading, and the
+     old #8c8a80 fell below WCAG AA contrast at this size. */
+  .tech__label {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b6960;
+    margin-right: 2mm;
+  }
+
+  /* ── Skills ─────────────────────────────────────────────────────────── */
+
+  /* The skills table is short; splitting it across a page break reads as a
+     mistake. Move it whole. */
+  .skills {
+    break-inside: avoid;
+  }
+
+  .skills__row {
+    display: grid;
+    grid-template-columns: 24mm 1fr;
+    gap: 3mm;
+    margin-bottom: 1.4mm;
+  }
+
+  .skills__row dt {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    font-size: var(--pt-meta);
+    color: #6b6960;
+    padding-top: 0.4mm;
+  }
+
+  .skills__row dd {
+    margin: 0;
+  }
+
+  /* ── Projects & education ───────────────────────────────────────────── */
+
+  .project {
+    margin-bottom: 2.2mm;
+    break-inside: avoid;
+  }
+
+  .project:last-child {
+    margin-bottom: 0;
+  }
+
+  .project__name {
+    font-size: var(--pt-title);
+  }
+
+  .project__blurb {
+    color: #35342c;
+    margin-top: 0.4mm;
+  }
+
+  .school__name {
+    font-size: var(--pt-title);
+  }
+
+  .school__degree {
+    color: #45443c;
+    font-size: var(--pt-small);
+  }
+
+  /* ── Screen-only tools: print button + the three download variants ──── */
+
+  .tools {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .tools__print {
+    font: inherit;
+    font-size: 9pt;
+    background: #14140f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+  }
+
+  .tools__link {
+    font-size: 8.5pt;
+    text-align: center;
+    color: #45443c;
+    background: #fff;
+    border: 1px solid #d6d3ca;
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    text-decoration: none;
+  }
+
+  .tools__link:hover {
+    border-color: #14140f;
+    color: #14140f;
+  }
+
+  /* The variant currently on screen. */
+  .tools__link[aria-current] {
+    border-color: #8c8a80;
+    background: #f4f2ee;
+  }
+
+  /* Screen preview width matches the paper. Print ignores this. */
+  .sheet.paper-letter {
+    max-width: 215.9mm;
+  }
+
+  /* Letter is 17.6mm shorter than A4 per page. Reclaim that with tighter
+     leading and spacing — same type sizes — so the letter variant still
+     lands on two pages. */
+  .paper-letter {
+    line-height: 1.34;
+  }
+
+  .paper-letter .block {
+    margin-top: 3.4mm;
+  }
+
+  .paper-letter .block h2 {
+    margin-bottom: 2.4mm;
+  }
+
+  .paper-letter .company {
+    margin-bottom: 2.8mm;
+  }
+
+  .paper-letter .role {
+    margin-top: 1.6mm;
+  }
+
+  .paper-letter .bullets li {
+    margin-bottom: 0.5mm;
+  }
+
+  .paper-letter .project {
+    margin-bottom: 1.8mm;
+  }
+
+  .paper-letter .tech {
+    margin-top: 1.7mm;
+  }
+
+  @media print {
+    body {
+      background: #fff;
+      padding: 0;
+    }
+
+    .sheet {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .tools {
+      display: none;
+    }
+  }
+</style>
+
+{
+  /* @page rules cannot be scoped by selector, so the Letter size ships as a
+     later rule that wins the @page cascade. It must be `is:inline` with
+     `set:html`: Astro never evaluates expressions inside <style> content, so
+     a templated style block would be emitted as literal text, not CSS. */
+  paper === 'letter' && <style is:inline set:html={'@page { size: Letter; margin: 10mm 13mm; }'} />
+}

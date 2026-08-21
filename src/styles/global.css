@@ -12,7 +12,9 @@
   --bg-sunken: #f4f2ee;
   --text: #1a1a17;
   --text-muted: #64635c;
-  --text-faint: #8d8b82;
+  /* Darkest value that still reads as a third tier below --text-muted while
+     clearing WCAG AA (4.55:1) at the small sizes this token is used at. */
+  --text-faint: #75736a;
   --rule: #e4e1da;
   --rule-strong: #cfcbc1;
   --accent: #a8480a;
@@ -56,7 +58,7 @@
     --bg-sunken: #131315;
     --text: #ece9e3;
     --text-muted: #9c998f;
-    --text-faint: #75736b;
+    --text-faint: #7d7b73;
     --rule: #262629;
     --rule-strong: #3a3a3e;
     --accent: #e89047;
@@ -74,7 +76,7 @@
   --bg-sunken: #131315;
   --text: #ece9e3;
   --text-muted: #9c998f;
-  --text-faint: #75736b;
+  --text-faint: #7d7b73;
   --rule: #262629;
   --rule-strong: #3a3a3e;
   --accent: #e89047;
